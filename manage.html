@@ -169,10 +169,11 @@ const NAV=[['overview','Overview'],['plan','Floor plan'],['vendor','Vendors'],['
 function render(){
   const days=Math.max(0,Math.ceil((EVENT_START-new Date())/86400000));
   app.innerHTML=`<header class="top"><img src="${LOGO}" alt="glee"><h1>Management</h1><span class="count">${days} days to opening</span>
-   <span class="who">${esc(ME.name)}</span><a class="btn ghost sm" href="dashboard.html">Live dashboard</a><button class="btn ghost sm" id="so">Sign out</button></header>
+   <span class="who">${esc(ME.name)}</span><button class="btn ghost sm" id="cp">Change password</button><a class="btn ghost sm" href="dashboard.html">Live dashboard</a><button class="btn ghost sm" id="so">Sign out</button></header>
    <nav class="navbar">${NAV.map(([k,l])=>`<button data-v="${k}" class="${view===k?'on':''}">${l}</button>`).join('')}</nav>
    <main class="wrap" id="main"></main>`;
   app.querySelectorAll('.navbar button').forEach(b=>b.onclick=()=>{view=b.dataset.v;filt={stage:'all',q:''};render();scrollTo(0,0)});
+  document.getElementById('cp').onclick=()=>setPasswordView();
   document.getElementById('so').onclick=async()=>{await sb.auth.signOut();chan&&sb.removeChannel(chan);chan=null;loginView()};
   const M=document.getElementById('main');
   ({overview:vOverview,plan:vPlan,updates:vUpdates}[view]||vList)(M);
