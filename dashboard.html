@@ -112,7 +112,7 @@ function render(){
   const booths=C.booths.map(b=>({label:`${b.id} ${b.name_en}`,v:bv[b.id]?.size||0,extra:(favBy[b.id]?`♥${favBy[b.id]}`:'')+(avgR(b.id)?` ★${avgR(b.id)}`:'')})).sort((a,b)=>b.v-a.v);
   const items=C.items.map(m=>({label:`${m.id} ${m.name_en}`,v:favBy[m.id]||0,extra:`${mv[m.id]?.size||0} scans`})).sort((a,b)=>b.v-a.v);
   app.innerHTML=`<div class="wrap">
-  <header><img src="${LOGO}" alt="glee"><h1>Live dashboard</h1><span class="live ${live?'on':''}" id="liveTag"><i></i>${live?'Live':'Connecting'}</span><button class="btn ghost" id="rf">Refresh</button><button class="btn ghost" id="so">Sign out</button></header>
+  <header><img src="${LOGO}" alt="glee"><h1>Live dashboard</h1><span class="live ${live?'on':''}" id="liveTag"><i></i>${live?'Live':'Connecting'}</span><a class="btn lime" href="manage.html" style="text-decoration:none">Management &amp; planning</a><button class="btn ghost" id="rf">Refresh</button><button class="btn ghost" id="so">Sign out</button></header>
   <div class="tabs">${[['all','All days'],...DAYS.map((d,i)=>[d,`Day ${i+1} · ${new Date(d+'T12:00:00').toLocaleDateString('en-GB',{day:'numeric',month:'short'})}`])].map(([k,l])=>`<button data-d="${k}" class="${day===k?'on':''}">${l}</button>`).join('')}</div>
   <div class="kpis">
     <div class="kpi coral"><div class="v">${vis.length}</div><div class="l">Visitors registered</div></div>
