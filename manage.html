@@ -165,7 +165,7 @@ function live(){ if(chan) return; let tm=null; const re=()=>{clearTimeout(tm);tm
   chan=sb.channel('mg').on('postgres_changes',{event:'*',schema:'public',table:'mg_items'},re).on('postgres_changes',{event:'*',schema:'public',table:'mg_updates'},re).subscribe(); }
 
 /* ---------- layout ---------- */
-const NAV=[['overview','Overview'],['plan','Floor plan'],['vendor','Vendors'],['sponsor','Sponsors'],['academy','Academy'],['supplier','Suppliers & venue'],['task','Checklist'],['updates','Updates']];
+const NAV=[['overview','Overview'],['plan','Floor plan'],['views','3D views'],['vendor','Vendors'],['sponsor','Sponsors'],['academy','Academy'],['supplier','Suppliers & venue'],['task','Checklist'],['updates','Updates']];
 function render(){
   const days=Math.max(0,Math.ceil((EVENT_START-new Date())/86400000));
   app.innerHTML=`<header class="top"><img src="${LOGO}" alt="glee"><h1>Management</h1><span class="count">${days} days to opening</span>
@@ -176,7 +176,7 @@ function render(){
   document.getElementById('cp').onclick=()=>setPasswordView();
   document.getElementById('so').onclick=async()=>{await sb.auth.signOut();chan&&sb.removeChannel(chan);chan=null;loginView()};
   const M=document.getElementById('main');
-  ({overview:vOverview,plan:vPlan,updates:vUpdates}[view]||vList)(M);
+  ({overview:vOverview,plan:vPlan,views:vViews,updates:vUpdates}[view]||vList)(M);
 }
 const by=k=>ITEMS.filter(i=>i.kind===k);
 const boothOf=b=>ITEMS.find(i=>i.kind==='vendor'&&i.booth===b&&i.stage!=='Not joining');
@@ -223,6 +223,19 @@ function planSVG(){
      <text x="${x}" y="${y-20}" text-anchor="middle" class="bn">${id}</text><text x="${x}" y="${y+8}" text-anchor="middle" class="bv">${esc(l1)}</text>
      ${l2?`<text x="${x}" y="${y+30}" text-anchor="middle" class="bv">${esc(l2)}</text>`:''}${it?'':`<text x="${x}" y="${y+30}" text-anchor="middle" class="bs">tap to assign</text>`}</g>`}).join('');
   return `<div class="planwrap"><svg class="plan" viewBox="0 0 ${GEO.W} ${GEO.H}" role="img" aria-label="Floor plan with 16 booths">${PLAN_SVG}${booths}</svg></div>`;
+}
+/* ---------- 3D views ---------- */
+const VIEWS=[
+ {t:'Venue · current layout',s:'Updated 19 Nov 2026. Black 3 m ceilings on the sides, glass-roof square (4.5 m) in the centre, cherry red Academy tables. The Academy edge here shows the Kuwait skyline option.',
+  i:[['venue-01-front-door','From the front door'],['venue-02-square-from-the-edit','Glass-roof square, from The Edit'],['venue-03-square-to-south-wall','Square towards the south wall'],['venue-04-square-to-academy','Square towards the Academy'],['venue-05-main-hall-to-the-edit','Main hall towards The Edit'],['venue-06-inside-the-edit','Inside The Edit'],['venue-07-academy-door-registration','Academy door and registration'],['venue-08-inside-academy','Inside the Academy']]},
+ {t:'Academy edge · options (not final)',s:'Option 1: styrofoam Kuwait skyline, 9.20 m in 4 sections, printed both sides. Option 2: five 4A0 canvas stands, 25 cm white border, art 106 × 163 cm (on hold).',
+  i:[['edge-skyline-wide','Option 1 · Kuwait skyline'],['edge-skyline-close','Option 1 · close'],['edge-stands-wide','Option 2 · canvas stands'],['edge-stands-close','Option 2 · close']]},
+ {t:'Booth table name · options',s:'Brand name in cut-out acrylic letters (Inter Tight), top-right corner of the table, ending at the edge. C is acceptable; choosing between C, E, H and I.',
+  i:[['table-name-C-corner-wrap','C · corner wrap'],['table-name-E-cap','E · cap over the top'],['table-name-H-shadow','H · shadow letters'],['table-name-I-lit','I · lit corner wrap']]}
+];
+function vViews(M){
+  M.innerHTML=VIEWS.map(g=>`<section class="card" style="margin-bottom:14px"><h2>${esc(g.t)}</h2><p class="sub">${esc(g.s)}</p>
+   <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px">${g.i.map(([f,c])=>`<a href="renders/${f}.jpg" target="_blank" rel="noopener" style="text-decoration:none;color:inherit"><img src="renders/${f}.jpg" alt="${esc(c)}" loading="lazy" style="width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:var(--r);display:block;background:var(--line)"><div class="small" style="margin-top:4px">${esc(c)}</div></a>`).join('')}</div></section>`).join('');
 }
 function vPlan(M){
   const free=GEO.booths.map((_,n)=>'B'+String(n+1).padStart(2,'0')).filter(b=>!boothOf(b));
