@@ -294,7 +294,7 @@ function drawer(title,body,foot){const d=document.getElementById('drawer');
 function closeDrawer(){document.body.classList.remove('open');CUR=null}
 function teamOpts(v){const names=TEAM.map(t=>t.name);if(v&&!names.includes(v))names.push(v);return `<option value="">No owner</option>`+names.map(n=>`<option ${n===v?'selected':''}>${esc(n)}</option>`).join('')}
 function form(i){
-  const k=i.kind, isV=k==='vendor';
+  const k=i.kind, isV=k==='vendor'||k==='sponsor';
   return `<label class="f">Stage</label><div class="stages" id="stg">${STAGES.map(s=>`<button type="button" data-s="${s}" class="${i.stage===s?'on':''}">${s}</button>`).join('')}</div>
   <label class="f" for="f_name">Name</label><input class="in" id="f_name" value="${esc(i.name)}">
   <div class="two"><div><label class="f" for="f_category">Category / topic</label><input class="in" id="f_category" value="${esc(i.category)}"></div>
