@@ -184,10 +184,33 @@ const $=s=>document.querySelector(s);
 const byId={}; C.booths.forEach(b=>byId[b.id]={...b,kind:'booth'}); C.items.forEach(m=>byId[m.id]={...m,kind:'item'}); C.sessions.forEach(s=>byId[s.id]={...s,kind:'session'});
 byId.ENTRY={id:'ENTRY',kind:'entry',name_en:'Welcome to glee',name_ar:'أهلاً بك في glee'}; byId.REG={id:'REG',kind:'desk',name_en:'Workshop registration',name_ar:'تسجيل الورش'};
 
+/* ---------- brand pages: logo, short info, Instagram (preview) ---------- */
+const BRANDS={
+ B01:{name:'Tailor Express',desc:'Our partner at The City on Display.',sponsor:1},
+ B02:{name:'Aspect'},
+ B03:{name:'Ride Safe',desc:'Our partner at The City on Display.',sponsor:1},
+ B06:{name:'Interior by AHR',desc:'Interior design studio by Ahmad Alrasheed.',ig:'interiorbyahr',web:'https://interiorbyahr.com'},
+ B08:{name:'Malmas',desc:'Skin care. Your Skin. Your Story. Your Malmas. Registered with the Ministry of Health.',ig:'malmas.kw',web:'https://malmas.com'},
+ B09:{name:'Seen Stitches',desc:'Kuwaiti clothing brand. Stitched to be SEEN.',ig:'seenstitches',web:'https://seenstitches.shop'},
+ B10:{name:'HowSheWearsIt',desc:'Architectural womenswear. Wear the woman you’ve become.',ig:'thehsw.co'},
+ B11:{name:'Salma Musab',ig:'salmamusab',web:'https://salmamusab.com'},
+ B12:{name:'Lamsheen',desc:'Also at The Avenues, Edge Complex, Qortuba Mall and Al Khiran Mall.',ig:'lam_sheen'},
+ B13:{name:'Kuwaiti Club',desc:'A stylish version of classic sportswear.',ig:'kuwaiti.club',web:'https://kuwaiticlub.store'},
+ B14:{name:'Sastrería',ig:'sastreria.kw',web:'https://sastreriakw.com'},
+ B15:{name:'R Personal Shopper',desc:'Kaftans and occasion wear, in limited quantities. Al Hamra Tower, mezzanine.',ig:'rpersonalshopper'},
+ B16:{name:'Niza Design',desc:'Also at Khiran Mall, Edge Shuwaikh and Tijariya Mall. Kids line: @nizakids.',ig:'nizadesign',web:'https://nizadesign.com'},
+ M01:{name:'EDION',desc:'Luxury fragrances, handcrafted in Italy and born in Florence. Now in Kuwait, at Hamra Mall.',ig:'edion.kw',mp:1},
+ M02:{name:'Dark Chocolatier',desc:'Burj Al Jazz, Ahmed Al Jaber St.',ig:'adarkbite',mp:1},
+ M03:{name:'Arcadia',desc:'Luxury furniture since 1999. Design District Centre, Shuwaikh.',ig:'arcadia.kw',mp:1}
+};
+function applyBrands(){Object.entries(BRANDS).forEach(([id,b])=>{const o=byId[id]||{id,cat:'',kind:b.mp?'brand':'booth'};
+  byId[id]={...o,kind:b.mp?'brand':(o.kind||'booth'),name_en:b.name,name_ar:b.name,desc_en:o.desc_en||b.desc||null,ig:o.ig||b.ig||null,web:o.web||b.web||null,logo:'logos/'+id+'.webp',sponsor:b.sponsor,mp:b.mp}})}
+applyBrands();
+
 /* ---------- state ---------- */
 const sb=window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true}}):null;
 /* live booth list from the management page: confirmed vendors only */
-if(sb) sb.from('app_booths').select('*').then(({data})=>{if(data&&data.length){C.booths=data.sort((a,b)=>a.id.localeCompare(b.id)).map(b=>({id:b.id,cat:b.category||'',name_en:b.name,name_ar:b.name,desc_en:b.public_desc,desc_ar:null,offer_en:null,offer_ar:null,ig:b.instagram,web:null}));C.booths.forEach(b=>byId[b.id]={...b,kind:'booth'});try{render()}catch(e){}}});
+if(sb) sb.from('app_booths').select('*').then(({data})=>{if(data&&data.length){C.booths=data.sort((a,b)=>a.id.localeCompare(b.id)).map(b=>({id:b.id,cat:b.category||'',name_en:b.name,name_ar:b.name,desc_en:b.public_desc,desc_ar:null,offer_en:null,offer_ar:null,ig:b.instagram,web:null}));C.booths.forEach(b=>byId[b.id]={...b,kind:'booth'});applyBrands();try{render()}catch(e){}}});
 let me=null, scans=[], favs=new Set(), ratings={}, pendingPlace=null;
 function toast(msg){const el=$('#toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'),2200)}
 const stampCount=()=>new Set(scans.map(s=>s.place_id).filter(id=>id!=='ENTRY'&&id!=='REG'&&!/^ART/.test(id))).size;
@@ -314,8 +337,8 @@ place(id){
   const stamped=scans.some(s=>s.place_id===id);
   const fav=`<button class="btn ghost" id="favBtn">${favs.has(id)?'♥':'♡'} ${esc(t('fav'))}</button>`;
   let body='';
-  if(p.kind==='booth'){
-    body=`<span class="tag ink">${p.id}</span> <span class="tag">${esc(lang==='ar'?CATS_AR[p.cat]:p.cat)}</span>${stamped?` <span class="tag lime">✓ ${esc(t('stamped'))}</span>`:''}
+  if(p.kind==='booth'||p.kind==='brand'){
+    body=`${p.logo?`<div style="background:#fff;border-radius:20px;overflow:hidden;margin:4px 0 14px;padding:34px 28px;border:1px solid rgba(0,0,0,.08)"><img src="${p.logo}" alt="${esc(L(p,'name'))} logo" style="display:block;width:100%;height:120px;object-fit:contain"></div>`:''}<span class="tag ink">${p.mp?esc(t('masterpiece')):p.id}</span> ${p.cat?`<span class="tag">${esc(lang==='ar'?(CATS_AR[p.cat]||p.cat):p.cat)}</span>`:''}${p.sponsor?`<span class="tag lime">${lang==='ar'?'شريكنا':'Our partner'}</span>`:''}${stamped?` <span class="tag lime">✓ ${esc(t('stamped'))}</span>`:''}
     <h1 style="margin-top:12px">${esc(L(p,'name'))}</h1><p style="font-size:17px;line-height:1.5">${esc(L(p,'desc'))}</p>
     ${p.offer_en?`<div class="card" style="background:var(--coral);color:#fff;border:0"><div class="small" style="opacity:.85">${esc(t('offer'))}</div><h3>${esc(L(p,'offer'))}</h3></div>`:''}
     <div class="row" style="flex-wrap:wrap">${fav}${p.ig?`<a class="btn ghost" href="https://instagram.com/${esc(String(p.ig).replace('@',''))}">${esc(t('instagram'))}</a>`:''}${p.web?`<a class="btn ghost" href="${esc(p.web)}">${esc(t('website'))}</a>`:''}</div>
