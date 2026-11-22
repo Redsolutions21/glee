@@ -179,7 +179,7 @@ function render(){
   ({overview:vOverview,plan:vPlan,views:vViews,updates:vUpdates}[view]||vList)(M);
 }
 const by=k=>ITEMS.filter(i=>i.kind===k);
-const boothOf=b=>ITEMS.find(i=>i.kind==='vendor'&&i.booth===b&&i.stage!=='Not joining');
+const boothOf=b=>ITEMS.find(i=>i.booth===b&&i.stage!=='Not joining');
 
 function vOverview(M){
   const v=by('vendor'),s=by('sponsor'),w=by('workshop'),t=by('talk');
