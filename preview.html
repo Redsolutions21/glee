@@ -203,6 +203,7 @@ const BRANDS={
  M01:{name:'EDION',desc:'Luxury fragrances, handcrafted in Italy and born in Florence. Now in Kuwait, at Hamra Mall.',ig:'edion.kw',mp:1},
  M02:{name:'Dark Chocolatier',desc:'Burj Al Jazz, Ahmed Al Jaber St.',ig:'adarkbite',mp:1},
  M03:{name:'Arcadia',desc:'Luxury furniture since 1999. Design District Centre, Shuwaikh.',ig:'arcadia.kw',mp:1}
+ M04:{name:'É Studio',desc:'Flower boutique.',ig:'e.studiokw',mp:1},
 };
 function applyBrands(){Object.entries(BRANDS).forEach(([id,b])=>{const o=byId[id]||{id,cat:'',kind:b.mp?'brand':'booth'};
   byId[id]={...o,kind:b.mp?'brand':(o.kind||'booth'),name_en:b.name,name_ar:b.name,desc_en:o.desc_en||b.desc||null,ig:o.ig||b.ig||null,web:o.web||b.web||null,logo:'logos/'+id+'.webp',sponsor:b.sponsor,mp:b.mp}})}
