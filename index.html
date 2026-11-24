@@ -325,7 +325,7 @@ edit(arg){
   const cats=[...new Set(C.booths.map(b=>b.cat).filter(Boolean))]; const cur=arg||'all';
   const list=C.booths.filter(b=>cur==='all'||b.cat===cur||(cur==='fav'&&favs.has(b.id)));
   view.innerHTML=`${sampleNote()}<h1 style="margin:6px 0 12px">${esc(t('theEdit'))}</h1>
-  <div class="chips"><button class="chip ${cur==='all'?'on':''}" data-c="all">${esc(t('all'))}</button><button class="chip ${cur==='fav'?'on':''}" data-c="fav">♥ ${esc(t('fav'))}</button>${cats.map(c=>`<button class="chip ${cur===c?'on':''}" data-c="${esc(c)}">${esc(lang==='ar'?(CATS_AR[c]||c):c)}</button>`).join('')}</div>
+  <div class="chips"><button class="chip ${cur==='all'?'on':''}" data-c="all">${esc(t('all'))}</button><button class="chip ${cur==='fav'?'on':''}" data-c="fav">♥ ${esc(t('fav'))}</button></div>
   <div class="card list">${list.length?list.map(b=>`<div class="item" data-id="${b.id}"><span class="av ${scans.some(s=>s.place_id===b.id)?'on':''}">${b.id}</span><div class="grow"><b>${esc(L(b,'name'))}</b><div class="muted small">${esc(lang==='ar'?(CATS_AR[b.cat]||b.cat):b.cat)}${b.offer_en?' · <span style="color:var(--coral);font-weight:700">'+esc(t('offer'))+'</span>':''}</div></div><button class="heart" data-f="${b.id}">${favs.has(b.id)?'♥':'♡'}</button></div>`).join(''):`<p class="muted">${esc(t('noFav'))}</p>`}</div>`;
   view.querySelectorAll('.chip').forEach(c=>c.onclick=()=>go('edit',c.dataset.c));
   bindList();
@@ -337,7 +337,7 @@ masterpiece(){
 },
 academy(arg){
   const d=+(arg||1);
-  const days=[1,2,3,4].map(n=>{const s=C.sessions.find(x=>x.day===n); const dt=new Date(s.date+'T00:00:00'); return {n,label:dt.toLocaleDateString(lang==='ar'?'ar-KW':'en-GB',{day:'numeric',month:'short'})}});
+  const days=[1,2,3,4].map(n=>{const s=C.sessions.find(x=>x.day===n); const dt=new Date(s.date+'T00:00:00'); return {n,label:dt.toLocaleDateString(lang==='ar'?'ar-KW-u-nu-latn':'en-GB',{day:'numeric',month:'short'})}});
   view.innerHTML=`${sampleNote()}<h1 style="margin:6px 0 12px">${esc(t('academy'))}</h1>
   <div class="daytabs">${days.map(x=>`<button class="${x.n===d?'on':''}" data-d="${x.n}">${esc(t('day'))} ${x.n}<small>${esc(x.label)}</small></button>`).join('')}</div>
   ${C.sessions.every(s=>s.tba)?`<div class="card"><p class="muted">${esc(lang==='ar'?'اسأل في مكتب تسجيل الورش عن جلسات اليوم.':'Ask at the workshop registration desk for today’s sessions.')}</p></div>`:''}${C.sessions.filter(s=>s.day===d&&!s.tba).map(s=>`<div class="card sess ${s.type==='Talk'?'talk':''}" data-id="${s.id}" style="cursor:pointer">
