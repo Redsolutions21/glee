@@ -283,6 +283,7 @@ home(){
     <button class="tile" style="background:var(--coral);border-color:var(--coral);color:#fff;grid-column:span 2" onclick="go('academy')"><span class="tag" style="background:#fff;color:var(--ink)">${C.sessions.filter(s=>!s.tba).length||'—'}</span><span><b>${esc(t('academy'))}</b><br><span class="small">${esc(t('academySub'))}</span></span></button>
   </div><div class="spacer"></div>
   <button class="btn ink block" onclick="openScanner()">${esc(t('startScan'))}</button>
+  <div class="spacer"></div>${['s1','s2','s3'].map((k,i)=>`<a href="renders/slides/${k}.jpg" target="_blank" style="display:block;margin-top:12px"><img src="renders/slides/${k}.jpg" alt="${['Our partners','Meet the brands','Minds on Display: speakers'][i]}" loading="lazy" style="width:100%;display:block;border-radius:14px;border:1px solid rgba(0,0,0,.08)"></a>`).join('')}
   <p class="muted small center" style="margin-top:14px"><bdi>${esc(EVENT.hours)}</bdi> · <bdi>@${esc(EVENT.ig)}</bdi> · <a href="privacy.html">${esc(t('privacy'))}</a></p>`;
 },
 register(){
