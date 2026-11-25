@@ -224,7 +224,7 @@ applyBrands();
 /* ---------- state ---------- */
 const sb=window.supabase?window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:true,autoRefreshToken:true}}):null;
 /* live booth list from the management page: confirmed vendors only */
-if(sb) sb.from('app_booths').select('*').then(({data})=>{if(data&&data.length){C.booths=data.sort((a,b)=>a.id.localeCompare(b.id)).map(b=>({id:b.id,cat:b.category||'',name_en:b.name,name_ar:b.name,desc_en:b.public_desc,desc_ar:null,offer_en:null,offer_ar:null,ig:b.instagram,web:null}));C.booths.forEach(b=>byId[b.id]={...b,kind:'booth'});applyBrands();try{render()}catch(e){}}});
+const boothsReady=!sb?Promise.resolve():sb.from('app_booths').select('*').then(({data})=>{if(data&&data.length){C.booths=data.sort((a,b)=>a.id.localeCompare(b.id)).map(b=>({id:b.id,cat:b.category||'',name_en:b.name,name_ar:b.name,desc_en:b.public_desc,desc_ar:null,offer_en:null,offer_ar:null,ig:b.instagram,web:null}));C.booths.forEach(b=>byId[b.id]={...b,kind:'booth'});applyBrands();try{render()}catch(e){}}}).catch(e=>console.error(e));
 let me=null, scans=[], favs=new Set(), ratings={}, pendingPlace=null;
 function toast(msg){const el=$('#toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toast.t); toast.t=setTimeout(()=>el.classList.remove('show'),2200)}
 const stampCount=()=>new Set(scans.map(s=>s.place_id).filter(id=>id!=='ENTRY'&&id!=='REG'&&!/^ART/.test(id))).size;
@@ -461,6 +461,12 @@ window.addEventListener('hashchange',render);
   if(!sb){view.innerHTML=`<p class="err">${esc(t('offline'))}</p>`;return}
   try{await loadMe()}catch(e){console.error(e)}
   const p=new URLSearchParams(location.search).get('p');
+  /* vendor QR: go straight to the vendor's Instagram, no passport check-in needed; registered visitors still get their stamp */
+  if(p){ const id=p.toUpperCase(); try{await Promise.race([boothsReady,new Promise(r=>setTimeout(r,4000))])}catch(e){}
+    const b=byId[id]; const ig=b&&b.kind==='booth'&&b.ig?String(b.ig).trim():'';
+    if(ig){ const url=/^https?:\/\//i.test(ig)?ig:'https://www.instagram.com/'+ig.replace(/^@/,'').replace(/^(www\.)?instagram\.com\//i,'').replace(/\/+$/,'')+'/';
+      if(me){try{await Promise.race([sb.from('scans').insert({place_id:id}),new Promise(r=>setTimeout(r,1500))])}catch(e){}}
+      location.replace(url); return } }
   if(p){history.replaceState(null,'',location.pathname+location.hash); const id=p.toUpperCase(); if(byId[id]&&byId[id].kind==='art'){ if(me){try{await sb.from('scans').insert({place_id:id})}catch(e){}} go('art',id); return } if(byId[id]){ if(me){await recordScan(id); go('place',id)} else {pendingPlace=id; go('register')} return } }
   render();
 })();
