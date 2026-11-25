@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><script>/* QR-FAST: vendor QR goes straight to the vendor's Instagram */
-(function(){try{var p=new URLSearchParams(location.search).get('p');if(!p)return;p=p.toUpperCase();var IG={"B06": "interiorbyahr", "B08": "malmas.kw", "B09": "seenstitches", "B10": "thehsw.co", "B11": "salmamusab", "B12": "lam_sheen", "B13": "kuwaiti.club", "B14": "sastreria.kw", "B15": "rpersonalshopper", "B16": "nizadesign", "B17": "solutionsbyred", "M01": "edion.kw", "M02": "adarkbite", "M03": "arcadia.kw", "M04": "e.studiokw"};var ig=IG[p];if(!ig)return;
+(function(){try{var p=new URLSearchParams(location.search).get('p');if(!p)return;p=p.toUpperCase();var IG={"B06": "interiorbyahr", "B08": "malmas.kw", "B09": "seenstitches", "B10": "thehsw.co", "B11": "salmamusab", "B12": "lam_sheen", "B13": "kuwaiti.club", "B14": "sastreria.kw", "B15": "rpersonalshopper", "B16": "nizadesign", "B17": "solutionsbyred", "M01": "edion.kw", "M02": "adarkbite", "M03": "arcadia.kw", "M04": "e.studiokw", "B02": "select.aspect", "B01": "tailorexpress_kw", "B03": "ridesafe.app"};var ig=IG[p];if(!ig)return;
 try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(/^sb-.*-auth-token$/.test(k)){var t=JSON.parse(localStorage.getItem(k));var tok=t&&(t.access_token||(t.currentSession&&t.currentSession.access_token));if(tok){fetch('https://yqesylzqgdtmqpnnbhks.supabase.co/rest/v1/scans',{method:'POST',keepalive:true,headers:{'apikey':'sb_publishable_MhwCIVCYdQ_0osP8IJNOzw_JskeI_pj','Authorization':'Bearer '+tok,'Content-Type':'application/json','Prefer':'return=minimal'},body:JSON.stringify({place_id:p})}).catch(function(){})}}}}catch(e){}
 location.replace('https://www.instagram.com/'+ig+'/');}catch(e){}})();</script>
 <base href="/glee/">
@@ -197,9 +197,9 @@ byId.ENTRY={id:'ENTRY',kind:'entry',name_en:'Welcome to glee',name_ar:'أهلا�
 
 /* ---------- brand pages: logo, short info, Instagram (preview) ---------- */
 const BRANDS={
- B01:{name:'Tailor Express',desc:'Our partner at The City on Display.',sponsor:1},
- B02:{name:'Aspect'},
- B03:{name:'Ride Safe',desc:'Our partner at The City on Display.',sponsor:1},
+ B01:{name:'Tailor Express',ig:'tailorexpress_kw',desc:'Our partner at The City on Display.',sponsor:1},
+ B02:{name:'Aspect',ig:'select.aspect'},
+ B03:{name:'Ride Safe',ig:'ridesafe.app',desc:'Our partner at The City on Display.',sponsor:1},
  B06:{name:'Interior by AHR',desc:'Interior design studio by Ahmad Alrasheed.',ig:'interiorbyahr',web:'https://interiorbyahr.com'},
  B08:{name:'Malmas',desc:'Skin care. Your Skin. Your Story. Your Malmas. Registered with the Ministry of Health.',ig:'malmas.kw',web:'https://malmas.com'},
  B09:{name:'Seen Stitches',desc:'Kuwaiti clothing brand. Stitched to be SEEN.',ig:'seenstitches',web:'https://seenstitches.shop'},
